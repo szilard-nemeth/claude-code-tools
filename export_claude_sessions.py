@@ -842,7 +842,8 @@ def commit_repo(repo: Path, paths: list[Path], message: str, console: Console) -
         return False
     rel = [str(p.relative_to(repo)) for p in paths if p.is_relative_to(repo)]
     _git(repo, "add", "--", *rel)
-    _git(repo, "commit", "-m", message)
+    # Pass the paths to commit too, so anything else already staged is left out of this commit.
+    _git(repo, "commit", "-m", message, "--", *rel)
     console.print(f"[green]{repo.name}: committed {len(rel)} path(s)[/green]")
     return True
 
